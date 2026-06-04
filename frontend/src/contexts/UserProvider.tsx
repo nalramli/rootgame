@@ -3,6 +3,7 @@ import { createContext } from "react";
 import type { UseMutationResult } from "@tanstack/react-query";
 
 import type { components } from "../api/types";
+import { gameKeys } from "../api/queryKeys";
 
 const djangoUrl = import.meta.env.VITE_DJANGO_URL || "";
 
@@ -47,6 +48,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("success", data);
       queryClient.setQueryData(["user"], { username: variables.username });
       queryClient.invalidateQueries({ queryKey: ["playerInfo"] });
+      queryClient.invalidateQueries({ queryKey: gameKeys.gameLists() });
     },
     onError: (error) => {
       console.log("error", error);

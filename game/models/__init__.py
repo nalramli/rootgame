@@ -4,6 +4,7 @@ from .birds import *
 from .cats import *
 from .wa import *
 from .moles import *
+from .rats import *
 from .events import *
 from .checkpoint_models import Checkpoint, Action
 from .dominance import DominanceSupplyEntry, ActiveDominanceEntry
@@ -42,4 +43,15 @@ __all__ = [
     "GameLog",
     "LogType",
     "RemovalEventTracker",
+    "Stronghold",
+    "Mob",
+    "Warlord",
+    "CommandItemEntry",
+    "ProwessItemEntry",
+    "RatsPlayerState",
+    "RatsSimpleSetup",
+    "RatsTurn",
+    "RatsBirdsong",
+    "RatsDaylight",
+    "RatsEvening",
 ]

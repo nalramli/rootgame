@@ -12,6 +12,7 @@ const FACTION_VALUE_TO_KEY: Record<
   wa: "woodland-alliance",
   cr: "crows",
   mo: "moles",
+  ra: "rats",
 };
 
 export default function DevSignIn() {

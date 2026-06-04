@@ -50,6 +50,12 @@ from game.models.moles.ministers import Minister
 from game.models.moles.turn import MoleTurn, MoleBirdsong, MoleDaylight, MoleEvening
 from game.models.moles.setup import MolesSimpleSetup
 
+from game.models.rats.setup import RatsSimpleSetup
+from game.models.rats.player import CommandItemEntry, ProwessItemEntry, RatsPlayerState
+from game.models.rats.buildings import Stronghold
+from game.models.rats.tokens import Mob, Warlord
+from game.models.rats.turn import RatsTurn, RatsBirdsong, RatsDaylight, RatsEvening
+
 from game.models.events.event import Event
 from game.models.events.battle import Battle
 from game.models.events.wa import OutrageEvent
@@ -68,6 +74,7 @@ from game.models.events.crafted_cards import (
 )
 from game.models.events.crows import CrowRecruitEvent, CrowRaidEvent
 from game.models.events.moles import PriceOfFailureEvent
+from game.models.events.rats import HoardTooFullEvent, JubilantMobSpreadEvent, LavishEvent, LootingEvent, ResolveBitterEvent
 from game.models.removal_tracker import RemovalEventTracker
 from game.models.game_log import GameLog
 
@@ -122,6 +129,7 @@ def get_all_game_objects(game: Game):
         objects.extend(BirdsSimpleSetup.objects.filter(player=player))
         objects.extend(CrowsSimpleSetup.objects.filter(player=player))
         objects.extend(MolesSimpleSetup.objects.filter(player=player))
+        objects.extend(RatsSimpleSetup.objects.filter(player=player))
 
         # Pieces (Warriors, Buildings, Tokens)
         # For MTI (Multi-Table Inheritance), we MUST serialize the base models as well
@@ -206,6 +214,21 @@ def get_all_game_objects(game: Game):
         objects.extend(MoleDaylight.objects.filter(turn__in=mole_turns))
         objects.extend(MoleEvening.objects.filter(turn__in=mole_turns))
 
+        # Rats
+        objects.extend(RatsPlayerState.objects.filter(player=player))
+        objects.extend(CommandItemEntry.objects.filter(player=player))
+        objects.extend(ProwessItemEntry.objects.filter(player=player))
+        objects.extend(Stronghold.objects.filter(player=player))
+        objects.extend(Mob.objects.filter(player=player))
+        objects.extend(Warlord.objects.filter(player=player))
+
+        # Rats Turn History / State
+        rats_turns = RatsTurn.objects.filter(player=player)
+        objects.extend(rats_turns)
+        objects.extend(RatsBirdsong.objects.filter(turn__in=rats_turns))
+        objects.extend(RatsDaylight.objects.filter(turn__in=rats_turns))
+        objects.extend(RatsEvening.objects.filter(turn__in=rats_turns))
+
 
     # 4. Removal Tracker (depends on Game)
     removal_tracker = RemovalEventTracker.objects.filter(game=game).first()
@@ -230,6 +253,11 @@ def get_all_game_objects(game: Game):
     objects.extend(CrowRecruitEvent.objects.filter(event__in=events))
     objects.extend(CrowRaidEvent.objects.filter(event__in=events))
     objects.extend(PriceOfFailureEvent.objects.filter(event__in=events))
+    objects.extend(HoardTooFullEvent.objects.filter(event__in=events))
+    objects.extend(LootingEvent.objects.filter(event__in=events))
+    objects.extend(ResolveBitterEvent.objects.filter(event__in=events))
+    objects.extend(JubilantMobSpreadEvent.objects.filter(event__in=events))
+    objects.extend(LavishEvent.objects.filter(event__in=events))
 
     # 6. Game Logs
     objects.extend(GameLog.objects.filter(game=game).order_by("created_at"))

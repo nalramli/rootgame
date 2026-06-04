@@ -22,7 +22,7 @@ def is_emigre(player: Player) -> bool:
     return has_eyrie_emigre
 
 @transaction.atomic
-def emigre_move(event: EyrieEmigreEvent, origin: Clearing, destination: Clearing, count: int):
+def emigre_move(event: EyrieEmigreEvent, origin: Clearing, destination: Clearing, count: int, move_warlord: bool = False):
     """
     execute the move action for eyrie emigre event
     Mark the move as completed on the event, and mark the destination clearing
@@ -32,7 +32,7 @@ def emigre_move(event: EyrieEmigreEvent, origin: Clearing, destination: Clearing
     if event.move_completed:
         raise ValueError("Move already completed")
     from game.transactions.general import move_warriors
-    move_warriors(player, origin, destination, count)
+    move_warriors(player, origin, destination, count, move_warlord=move_warlord)
     event.move_completed = True
     event.move_destination = destination
     event.save()
@@ -74,6 +74,24 @@ def emigre_battle(event: EyrieEmigreEvent, target_faction : Faction):
     from game.models.game_models import Faction
     attacking_faction = Faction(event.crafted_card_entry.player.faction)
     defending_faction = target_faction
+    #mark battle initiated
+    event.battle_initiated = True
+    event.save()
+    #mark card as used
+    event.crafted_card_entry.used = CraftedCardEntry.UsedChoice.USED
+    event.crafted_card_entry.save()
+    #mark event as resolved
+    event.event.is_resolved = True
+    event.event.save()
+
+    # Advance the turn machine BEFORE creating the battle event.
+    # If we called step_effect after start_battle, the new unresolved
+    # BATTLE event would block general.step_effect's guard and the
+    # phase would never advance from BirdBirdsong.BEFORE_END.
+    from game.transactions.general import step_effect
+    step_effect(event.crafted_card_entry.player)
+
+    # Initiate the battle (creates a new unresolved BATTLE event)
     start_battle(game, attacking_faction, defending_faction, clearing)
 
     from game.serializers.logs.general import get_active_phase_log
@@ -89,21 +107,6 @@ def emigre_battle(event: EyrieEmigreEvent, target_faction : Faction):
         },
         parent=get_active_phase_log(game)
     )
-
-    #mark battle initiated
-    event.battle_initiated = True
-    event.save()
-    #mark card as used
-    event.crafted_card_entry.used = CraftedCardEntry.UsedChoice.USED
-    event.crafted_card_entry.save()
-    #mark event as resolved
-    event.event.is_resolved = True
-    event.event.save()
-    
-    # continue turn
-    # continue turn
-    from game.transactions.general import step_effect
-    step_effect(event.crafted_card_entry.player)
 
 
 @transaction.atomic

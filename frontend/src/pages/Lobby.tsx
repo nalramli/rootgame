@@ -10,12 +10,15 @@ import {
   Badge,
   Paper,
   Group,
+  ActionIcon,
+  Modal,
 } from "@mantine/core";
 import {
   useActiveGames,
   useJoinableGames,
   useCreateGame,
   useJoinGame,
+  useDeleteGame,
   type GameListItem,
 } from "../hooks/useGames";
 import { useState } from "react";
@@ -25,6 +28,7 @@ import {
   IconExternalLink,
   IconUserPlus,
   IconLogout,
+  IconTrash,
 } from "@tabler/icons-react";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserProvider";
@@ -38,8 +42,10 @@ const LobbyPage = () => {
   const { data: joinableGames } = useJoinableGames();
   const createGameMutation = useCreateGame();
   const joinGameMutation = useJoinGame();
+  const deleteGameMutation = useDeleteGame();
 
   const [map, setMap] = useState("0");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   const handleCreateGame = async () => {
     createGameMutation.mutate(
@@ -95,13 +101,26 @@ const LobbyPage = () => {
               </Table.Td>
               <Table.Td>
                 {type === "active" ? (
-                  <Button
-                    leftSection={<IconExternalLink size={14} />}
-                    size="xs"
-                    onClick={() => navigate(`/game/${game.id}`)}
-                  >
-                    Open
-                  </Button>
+                  <Group gap="xs">
+                    <Button
+                      leftSection={<IconExternalLink size={14} />}
+                      size="xs"
+                      onClick={() => navigate(`/game/${game.id}`)}
+                    >
+                      Open
+                    </Button>
+                    {game.owner_username === username && (
+                      <ActionIcon
+                        color="red"
+                        variant="subtle"
+                        size="sm"
+                        aria-label="Delete game"
+                        onClick={() => setConfirmDeleteId(game.id)}
+                      >
+                        <IconTrash size={14} />
+                      </ActionIcon>
+                    )}
+                  </Group>
                 ) : (
                   <Button
                     leftSection={<IconUserPlus size={14} />}
@@ -183,6 +202,35 @@ const LobbyPage = () => {
           </Stack>
         </Tabs.Panel>
       </Tabs>
+      <Modal
+        opened={confirmDeleteId !== null}
+        onClose={() => setConfirmDeleteId(null)}
+        title="Delete game"
+        centered
+      >
+        <Text mb="lg">
+          Are you sure you want to delete game #{confirmDeleteId}? This cannot
+          be undone.
+        </Text>
+        <Group justify="flex-end">
+          <Button variant="default" onClick={() => setConfirmDeleteId(null)}>
+            Cancel
+          </Button>
+          <Button
+            color="red"
+            loading={deleteGameMutation.isPending}
+            onClick={() => {
+              if (confirmDeleteId !== null) {
+                deleteGameMutation.mutate(confirmDeleteId, {
+                  onSuccess: () => setConfirmDeleteId(null),
+                });
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </Group>
+      </Modal>
     </Container>
   );
 };

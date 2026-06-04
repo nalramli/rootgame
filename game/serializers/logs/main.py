@@ -24,6 +24,7 @@ class GameLogSerializer(serializers.ModelSerializer):
         from .wa import get_serializer_data as get_wa_data
         from .crows import get_serializer_data as get_crow_data
         from .moles import get_serializer_data as get_moles_data
+        from .rats import get_serializer_data as get_rats_data
         from .crafted_cards import get_serializer_data as get_crafted_data
 
         for getter in [
@@ -33,6 +34,7 @@ class GameLogSerializer(serializers.ModelSerializer):
             get_wa_data,
             get_crow_data,
             get_moles_data,
+            get_rats_data,
             get_crafted_data,
         ]:
             result = getter(log, details, request=request)

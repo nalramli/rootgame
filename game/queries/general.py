@@ -336,6 +336,25 @@ def get_player_hand_size(player: Player) -> int:
     return HandEntry.objects.filter(player=player).count()
 
 
+def get_cards_matching_clearing(player: Player, clearing: Clearing) -> list[HandEntry]:
+    """Return the player's HandEntry objects whose card suit matches *clearing*.
+
+    Includes bird / wild cards (they match any clearing).
+    """
+    from game.game_data.cards.exiles_and_partisans import CardsEP
+
+    entries = HandEntry.objects.filter(player=player).select_related("card")
+    result = []
+    for entry in entries:
+        try:
+            card_enum = CardsEP[entry.card.card_type]
+        except KeyError:
+            continue
+        if card_matches_clearing(card_enum, clearing):
+            result.append(entry)
+    return result
+
+
 def get_adjacent_clearings(player: Player, clearing: Clearing) -> set[Clearing]:
     """
     Returns a set of clearings adjacent to the given clearing for the player,

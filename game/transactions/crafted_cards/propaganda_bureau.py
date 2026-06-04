@@ -30,10 +30,27 @@ def use_propaganda_bureau(player: Player, card_to_spend : CardsEP, clearing : Cl
     # validate that effect is usable in current phase
     if not can_use_card(player, crafted_card):
         raise UnavailableActionError("Propaganda Bureau cannot be used right now")
-    # remove enemy warrior. if doesn't exist, raise
-    enemy_warrior = Warrior.objects.filter(player__faction=target_faction, clearing=clearing).first()
+    # remove enemy warrior. if doesn't exist, raise.
+    # Order so regular warriors (is_warlord=0) come first; Warlord last (is_warlord=1).
+    from game.models.rats.tokens import Warlord as RatsWarlord
+    from django.db.models import Case, IntegerField, Value, When
+
+    enemy_warrior = (
+        Warrior.objects.filter(player__faction=target_faction, clearing=clearing)
+        .annotate(
+            is_warlord=Case(
+                When(warlord__isnull=False, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField(),
+            )
+        )
+        .order_by("is_warlord")
+        .first()
+    )
     if enemy_warrior is None:
         raise IllegalActionError("No enemy warrior found in clearing")
+    if RatsWarlord.objects.filter(pk=enemy_warrior.pk).exists():
+        raise IllegalActionError("Cannot target the Warlord with Propaganda Bureau")
     enemy_warrior.clearing = None
     enemy_warrior.save()
     # add player's warrior to clearing, if able. if not, don't raise

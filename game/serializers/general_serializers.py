@@ -29,6 +29,8 @@ from game.models.game_models import (
 from game.models.wa.turn import WATurn
 from game.models.moles.setup import MolesSimpleSetup
 from game.models.moles.turn import MoleTurn
+from game.models.rats.setup import RatsSimpleSetup
+from game.models.rats.turn import RatsTurn
 from game.models.dominance import DominanceSupplyEntry, ActiveDominanceEntry
 from drf_spectacular.utils import extend_schema_field, Direction
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
@@ -362,8 +364,21 @@ class PayloadEntry(serializers.Serializer):
             return None
 
 
+class _PassThroughField(serializers.Field):
+    """Serializes any JSON-compatible value without type coercion.
+
+    Unlike CharField (which calls str()), this preserves booleans, integers,
+    and other JSON-serializable types exactly as provided.
+    """
+    def to_representation(self, value):
+        return value
+
+    def to_internal_value(self, data):
+        return data
+
+
 class OptionSerializer(serializers.Serializer):
-    value = serializers.CharField()
+    value = _PassThroughField()
     label = serializers.CharField(required=False)
     info = serializers.CharField(required=False, allow_null=True)
 
@@ -425,6 +440,7 @@ class GameStatusSerializer(serializers.Serializer):
                 Faction.WOODLAND_ALLIANCE: None,  #
                 Faction.CROWS: CrowsSimpleSetup,
                 Faction.MOLES: MolesSimpleSetup,
+                Faction.RATS: RatsSimpleSetup,
             }
         elif game.status == Game.GameStatus.SETUP_COMPLETED:
             turn_object_dict = {
@@ -433,6 +449,7 @@ class GameStatusSerializer(serializers.Serializer):
                 Faction.WOODLAND_ALLIANCE: WATurn,
                 Faction.CROWS: CrowTurn,
                 Faction.MOLES: MoleTurn,
+                Faction.RATS: RatsTurn,
             }
         if current_player is not None:
             faction = Faction(current_player.faction)

@@ -7,6 +7,7 @@ class Faction(models.TextChoices):
     WOODLAND_ALLIANCE = "wa", "Woodland Alliance"
     CROWS = "cr", "Crows"
     MOLES = "mo", "Moles"
+    RATS = "ra", "Rats"
 
 
 class Suit(models.TextChoices):

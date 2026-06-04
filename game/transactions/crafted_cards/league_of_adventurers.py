@@ -46,11 +46,12 @@ def use_league_of_adventurers(
 
     # 5. Execute action
     if move_data:
-        # move_data: {origin_clearing, target_clearing, number}
+        # move_data: {origin_clearing, target_clearing, number, move_warlord}
         origin = move_data["origin_clearing"]
         target = move_data["target_clearing"]
         number = move_data["number"]
-        move_warriors(player, origin, target, number)
+        move_warlord = bool(move_data.get("move_warlord", False))
+        move_warriors(player, origin, target, number, move_warlord=move_warlord)
     else:
         # battle_data: {clearing, opponent_faction}
         clearing = battle_data["clearing"]

@@ -29,6 +29,7 @@ import { Paper } from "@mantine/core";
 import { useClearingsQuery } from "../../hooks/useClearingsQuery";
 import type { BuildingType } from "./BuildingSlot";
 import { useCrowPlayerQuery } from "../../hooks/useCrowPlayerQuery";
+import useRatsPlayerQuery from "../../hooks/useRatsPlayerQuery";
 
 // Board component: positions, nodes, links, simple viewbox scaling
 export default function SvgBoard({
@@ -63,6 +64,12 @@ export default function SvgBoard({
   );
 
   const isMolesInGame = factionList.includes("Moles");
+  const isRatsInGame = factionList.includes("Rats");
+
+  const { publicInfo: ratsPublicInfo } = useRatsPlayerQuery(
+    gameId as number,
+    isRatsInGame && isGameStarted,
+  );
 
   useEffect(() => {
     if (!turnInfo.data) return;
@@ -271,12 +278,23 @@ export default function SvgBoard({
                 );
               })}
               {factionList?.map((faction: FactionLabel, idx) => {
-                const count =
+                const warriorCount =
                   warriorTable?.filter(
                     (entry) =>
                       entry.faction === faction &&
                       entry.clearing_number === clearingProp.clearingNumber,
                   ).length ?? 0;
+                const warlordHere =
+                  faction === "Rats" &&
+                  ratsPublicInfo?.warlord.clearing_number ===
+                    clearingProp.clearingNumber;
+                const count = warlordHere ? warriorCount + 1 : warriorCount;
+                const tooltip =
+                  count > 0
+                    ? warlordHere
+                      ? `Rats Warriors (${warriorCount}) + Warlord`
+                      : `${faction} Warriors (${count})`
+                    : undefined;
                 return (
                   <WarriorSlot
                     key={`w-${idx}`}
@@ -284,10 +302,9 @@ export default function SvgBoard({
                     warriorInfo={{
                       faction: faction,
                       count: count,
+                      hasWarlord: warlordHere,
                     }}
-                    tooltip={
-                      count > 0 ? `${faction} Warriors (${count})` : undefined
-                    }
+                    tooltip={tooltip}
                   />
                 );
               })}

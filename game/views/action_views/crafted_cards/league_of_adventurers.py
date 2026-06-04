@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from game.views.action_views.general import GameActionView
+from game.views.action_views.rats.interceptors import WarlordMoveInterceptorView
 from game.models.game_models import (
     CraftedItemEntry,
     Faction,
@@ -26,6 +27,7 @@ from game.decorators.transaction_decorator import atomic_game_action
 
 
 class LeagueOfAdventurersView(GameActionView):
+    interceptors = [{"view": WarlordMoveInterceptorView()}]
     def get(self, request, *args, **kwargs):
         game_id = kwargs.get("game_id") or request.query_params.get("game_id")
         player = self.player(request, game_id)
@@ -63,6 +65,8 @@ class LeagueOfAdventurersView(GameActionView):
                 return self.post_pick_destination(request, game_id)
             case "pick_count":
                 return self.post_pick_count(request, game_id)
+            case "execute_move":
+                return self.post_execute_move(request, game_id)
             case "pick_clearing":
                 return self.post_pick_clearing(request, game_id)
             case "pick_opponent":
@@ -198,12 +202,24 @@ class LeagueOfAdventurersView(GameActionView):
         )
 
     def post_pick_count(self, request, game_id):
+        count = int(request.data["count"])
+        return self.generate_completing_step(
+            accumulated_payload={
+                "item_id": request.data["item_id"],
+                "origin_number": int(request.data["origin_number"]),
+                "destination_number": int(request.data["destination_number"]),
+                "count": count,
+            },
+            request=request,
+            game_id=game_id,
+            execution_route="execute_move",
+        )
+
+    def post_execute_move(self, request, game_id):
         player = self.player(request, game_id)
         item_id = request.data["item_id"]
-        origin_number = int(request.data["origin_number"])
-        destination_number = int(request.data["destination_number"])
         count = int(request.data["count"])
-
+        move_warlord = bool(request.data.get("move_warlord", False))
         card_entry = get_object_or_404(
             CraftedCardEntry,
             player=player,
@@ -211,25 +227,23 @@ class LeagueOfAdventurersView(GameActionView):
         )
         item_entry = get_object_or_404(CraftedItemEntry, pk=item_id)
         origin = get_object_or_404(
-            Clearing, game=self.game(game_id), clearing_number=origin_number
+            Clearing, game=self.game(game_id), clearing_number=int(request.data["origin_number"])
         )
         destination = get_object_or_404(
-            Clearing, game=self.game(game_id), clearing_number=destination_number
+            Clearing, game=self.game(game_id), clearing_number=int(request.data["destination_number"])
         )
-
         move_data = {
             "origin_clearing": origin,
             "target_clearing": destination,
             "number": count,
+            "move_warlord": move_warlord,
         }
-
         try:
             atomic_game_action(use_league_of_adventurers)(
                 card_entry, item_entry, move_data=move_data
             )
         except ValueError as e:
             raise ValidationError({"detail": str(e)})
-
         return self.generate_completed_step()
 
     def post_pick_clearing(self, request, game_id):

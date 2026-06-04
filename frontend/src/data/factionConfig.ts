@@ -3,6 +3,7 @@ import BirdPlayerBoard from "../components/playerboards/birds/BirdPlayerBoard";
 import WaPlayerBoard from "../components/playerboards/wa/WaPlayerBoard";
 import CrowsPlayerBoard from "../components/playerboards/crows/CrowsPlayerBoard";
 import MolesPlayerBoard from "../components/playerboards/moles/MolesPlayerBoard";
+import RatsPlayerBoard from "../components/playerboards/rats/RatsPlayerBoard";
 
 export const FACTION_CONFIG = {
   cats: {
@@ -39,6 +40,13 @@ export const FACTION_CONFIG = {
     svgColor: "#d49d99",
     abbreviation: "MO",
     boardComponent: MolesPlayerBoard,
+  },
+  rats: {
+    value: "Rats",
+    color: "#8B0000",
+    svgColor: "#8B0000",
+    abbreviation: "RA",
+    boardComponent: RatsPlayerBoard,
   },
 } as const;
 

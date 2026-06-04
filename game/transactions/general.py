@@ -1,5 +1,8 @@
 from game.models.cats import CatKeep
-from game.queries.general import validate_player_has_crafted_card
+from game.queries.general import (
+    validate_can_place_piece_in_clearing,
+    validate_player_has_crafted_card,
+)
 from game.queries.general import validate_legal_move
 from random import shuffle
 import warnings
@@ -25,7 +28,7 @@ from game.models import (
     Warrior,
 )
 from game.models.dominance import DominanceSupplyEntry, ActiveDominanceEntry
-from game.models.game_models import Faction
+from game.models.game_models import Faction, BuildingSlot
 from game.queries.general import (
     determine_clearing_rule,
     warrior_count_in_clearing,
@@ -106,15 +109,41 @@ def move_warriors(
     clearing_end: Clearing,
     number: int,
     ignore_rule: bool = False,
+    move_warlord: bool = False,
 ):
-    """moves warriors from one clearing to another"""
+    """moves warriors from one clearing to another.
+
+    move_warlord=True (Rats only): the Warlord counts as one of the *number*
+    pieces being moved and will always be included first.  The queryset is
+    annotated so the Warlord sorts before regular warriors.
+
+    move_warlord=False (default): for Rats, the Warlord is explicitly excluded
+    from the queryset so it cannot be accidentally moved.
+    """
     from game.transactions.outrage import create_outrage_event
+    from django.db.models import Case, When, Value, IntegerField
 
     if number <= 0:
         raise IllegalActionError("Cannot move 0 warriors")
-    warriors = list(
-        Warrior.objects.filter(clearing=clearing_start, player=player)[:number]
-    )
+
+    qs = Warrior.objects.filter(clearing=clearing_start, player=player)
+
+    if move_warlord:
+        if player.faction != Faction.RATS:
+            raise IllegalActionError("move_warlord is only valid for the Rats faction")
+        # Warlord sorts first (is_warlord=0), regular warriors after (is_warlord=1)
+        qs = qs.annotate(
+            is_warlord=Case(
+                When(warlord__isnull=False, then=Value(0)),
+                default=Value(1),
+                output_field=IntegerField(),
+            )
+        ).order_by("is_warlord")
+    elif player.faction == Faction.RATS:
+        # Ensure the Warlord is never accidentally moved when player chose not to
+        qs = qs.filter(warlord__isnull=True)
+
+    warriors = list(qs[:number])
     if len(warriors) != number:
         raise IllegalActionError("not enough warriors in clearing to move")
     # check adjacency and rulership
@@ -144,8 +173,6 @@ def place_piece_from_supply_into_clearing(piece: Piece, clearing: Clearing):
     if piece.clearing is not None:
         raise InternalGameError("piece is already in a clearing")
 
-    from game.queries.general import validate_can_place_piece_in_clearing
-
     validate_can_place_piece_in_clearing(piece.player, clearing)
     # if moles and clearing is burrow, check that piece is a warrior
     if piece.player.faction == Faction.MOLES and clearing.clearing_number == 0:
@@ -172,7 +199,26 @@ def place_warriors_into_clearing(player: Player, clearing: Clearing, number: int
 
 
 @transaction.atomic
-def craft_card(card_in_hand: HandEntry, crafting_pieces: list[Piece]):
+def place_building_from_supply_into_slot(building: Building, slot: BuildingSlot):
+    """Place a building from supply into a building slot.
+
+    Validates:
+    - Building is in supply (building_slot is None).
+    - The target slot is empty.
+    """
+    if building is None:
+        raise IllegalActionError("building is None. Perhaps none left in supply?")
+    if building.building_slot is not None:
+        raise InternalGameError("building is already placed on the board")
+    if Building.objects.filter(building_slot=slot).exists():
+        raise IllegalActionError("Building slot is already occupied")
+    validate_can_place_piece_in_clearing(building.player, slot.clearing)
+    building.building_slot = slot
+    building.save()
+
+
+@transaction.atomic
+def craft_card(card_in_hand: HandEntry, crafting_pieces: list[Piece], **kwargs):
     """crafts a card with the given pieces. If it is an item, scores the points and discards it
     If not, moves the card to the player's crafted card box.
     NOTE: this function does not check if the player has enough crafting pieces to craft the card.
@@ -225,8 +271,19 @@ def craft_card(card_in_hand: HandEntry, crafting_pieces: list[Piece]):
         ).first()
         assert item_from_pool is not None, "item not in pool"
         item = item_from_pool.item
-        CraftedItemEntry(player=card_in_hand.player, item=item).save()
-        item_from_pool.delete()
+        adding_to_hoard = kwargs.get("adding_to_hoard", False)
+        if card_in_hand.player.faction == Faction.RATS:
+            if adding_to_hoard:
+                from game.transactions.rats.hoard import add_item_to_hoard
+
+                item_from_pool.delete()
+                add_item_to_hoard(card_in_hand.player, item)
+            else:
+                # delete from game
+                item.delete()  # should cascade and delete craftable item entry
+        else:
+            CraftedItemEntry(player=card_in_hand.player, item=item).save()
+            item_from_pool.delete()
         try:
             master_engravers_card = validate_player_has_crafted_card(
                 card_in_hand.player, CardsEP.MASTER_ENGRAVERS
@@ -244,6 +301,9 @@ def craft_card(card_in_hand: HandEntry, crafting_pieces: list[Piece]):
             leader = BirdLeader.objects.get(player=card_in_hand.player, active=True)
             if leader.leader != BirdLeader.BirdLeaders.BUILDER.value:
                 points = 1
+        # Rats Contempt for Trade: No listed points if adding to hoard.
+        elif card_in_hand.player.faction == Faction.RATS and adding_to_hoard:
+            points = 0
 
         card_in_hand.player.score += points
         if has_master_engravers:
@@ -317,6 +377,10 @@ def create_turn(player: Player):
         from game.transactions.moles.turn import create_moles_turn
 
         create_moles_turn(player)
+    elif player.faction == Faction.RATS:
+        from game.transactions.rats import create_rats_turn
+
+        create_rats_turn(player)
     else:
         raise InternalGameError(
             f"Faction {player.faction} not supported for turn creation"
@@ -396,10 +460,21 @@ def next_step(player: Player):
             from game.transactions.moles import next_step
 
             next_step(player)
+        case Faction.RATS:
+            from game.transactions.rats import next_step
+
+            next_step(player)
 
 
 @transaction.atomic
 def step_effect(player: Player):
+    # Guard: if any events are still unresolved, don't advance the step machine.
+    # This is the single choke-point for all cross-faction event resolutions.
+    from game.queries.current_action.events import get_current_event
+
+    if get_current_event(player.game) is not None:
+        return
+
     match player.faction:
         case Faction.CATS:
             from game.transactions.cats import step_effect
@@ -421,5 +496,9 @@ def step_effect(player: Player):
 
         case Faction.MOLES:
             from game.transactions.moles import step_effect
+
+            step_effect(player)
+        case Faction.RATS:
+            from game.transactions.rats import step_effect
 
             step_effect(player)

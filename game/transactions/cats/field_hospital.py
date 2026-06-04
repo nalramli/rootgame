@@ -74,3 +74,12 @@ def cat_resolve_field_hospital(player: Player, card: CardsEP | None):
 
     field_hospital_event.event.is_resolved = True
     field_hospital_event.event.save()
+
+    # Resume the current player's turn machine. If field hospital fired during
+    # another faction's turn (e.g. Rats advance), step_effect was blocked by the
+    # unresolved FH event. Now that it is resolved, we must call step_effect on
+    # the current turn player so the phase machine can continue.
+    from game.queries.general import get_current_player
+    from game.transactions.general import step_effect
+    current_player = get_current_player(field_hospital_event.event.game)
+    step_effect(current_player)

@@ -17,6 +17,7 @@ class GetCraftedCardsView(APIView):
                 "woodland-alliance": "wa",
                 "crows": "cr",
                 "moles": "mo",
+                "rats": "ra",
             }
             faction_code = mapping.get(faction, faction)
             faction_value = Faction(faction_code).value

@@ -115,6 +115,23 @@ export const useStartGame = () => {
     },
   });
 };
+export const useDeleteGame = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (gameId: number) => {
+      const resp = await fetchWithAuth(
+        `${djangoUrl}/api/game/delete/${gameId}/`,
+        { method: "DELETE" },
+      );
+      if (resp.status === 204) return null;
+      return resp.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: gameKeys.gameLists() });
+    },
+  });
+};
+
 export const usePickFaction = () => {
   const queryClient = useQueryClient();
   return useMutation({

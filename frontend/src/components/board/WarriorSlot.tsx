@@ -14,7 +14,7 @@ export const WarriorSlot = ({
   x: number;
   y: number;
   size: number;
-  warriorInfo: { faction: FactionLabel; count: number } | null;
+  warriorInfo: { faction: FactionLabel; count: number; hasWarlord?: boolean } | null;
   tooltip?: string;
 }) => {
   const ctx = useContext(ClearingContext);
@@ -43,6 +43,7 @@ export const WarriorSlot = ({
             size={absSize}
             count={warriorInfo.count}
             faction={warriorInfo.faction}
+            hasWarlord={warriorInfo.hasWarlord}
           />
         )}
       </g>

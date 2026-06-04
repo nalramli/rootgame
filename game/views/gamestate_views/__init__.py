@@ -3,6 +3,7 @@ from .birds import get_bird_player_public
 from .cats import get_cat_player_public
 from .wa import get_wa_player_public
 from .moles import get_moles_player_public
+from .rats import get_rats_player_public
 
 __all__ = [
     "get_clearings",
@@ -12,4 +13,5 @@ __all__ = [
     "get_cat_player_public",
     "get_wa_player_public",
     "get_moles_player_public",
+    "get_rats_player_public",
 ]

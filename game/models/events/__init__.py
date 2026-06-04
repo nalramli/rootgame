@@ -5,6 +5,7 @@ from .crafted_cards import *
 from .crows import *
 from .wa import *
 from .moles import *
+from .rats import HoardTooFullEvent
 
 __all__ = [
     "Battle",
@@ -18,5 +19,6 @@ __all__ = [
     "CrowRecruitEvent",
     "OutrageEvent",
     "PriceOfFailureEvent",
+    "HoardTooFullEvent",
 ]
 

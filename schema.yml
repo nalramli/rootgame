@@ -5933,6 +5933,1815 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
           description: ''
+  /api/rats/birdsong/choose-mood/:
+    get:
+      operationId: rats_birdsong_choose_mood_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_birdsong_choose_mood_create
+      description: Shown at the CHOOSE_MOOD step so the player can select their mood.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/birdsong/choose-mood/{game_id}/{route}/:
+    get:
+      operationId: rats_birdsong_choose_mood_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_birdsong_choose_mood_create_2
+      description: Shown at the CHOOSE_MOOD step so the player can select their mood.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/birdsong/spread-mob/:
+    get:
+      operationId: rats_birdsong_spread_mob_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_birdsong_spread_mob_create
+      description: |-
+        Shown when roll_mob_die_and_spread produced multiple valid targets.
+
+        step_effect auto-calls roll_mob_die_and_spread on entering SPREAD_MOB;
+        if a choice is required it stores mob_die_suit and pauses here.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/birdsong/spread-mob/{game_id}/{route}/:
+    get:
+      operationId: rats_birdsong_spread_mob_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_birdsong_spread_mob_create_2
+      description: |-
+        Shown when roll_mob_die_and_spread produced multiple valid targets.
+
+        step_effect auto-calls roll_mob_die_and_spread on entering SPREAD_MOB;
+        if a choice is required it stores mob_die_suit and pauses here.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/advance/:
+    get:
+      operationId: rats_daylight_advance_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_advance_create
+      description: |-
+        ADVANCE step: each cycle the Warlord may move then battle.
+
+        Shown at the start of every advance cycle (MOVE sub-step), after a move
+        (BATTLE sub-step), and for the optional Relentless bonus cycle
+        (RELENTLESS_BONUS sub-step).
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/advance/{game_id}/{route}/:
+    get:
+      operationId: rats_daylight_advance_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_advance_create_2
+      description: |-
+        ADVANCE step: each cycle the Warlord may move then battle.
+
+        Shown at the start of every advance cycle (MOVE sub-step), after a move
+        (BATTLE sub-step), and for the optional Relentless bonus cycle
+        (RELENTLESS_BONUS sub-step).
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/advance/battle/:
+    get:
+      operationId: rats_daylight_advance_battle_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_advance_battle_create
+      description: 'Advance Battle sub-action: pick defender faction in Warlord''s
+        clearing.'
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/advance/battle/{game_id}/{route}/:
+    get:
+      operationId: rats_daylight_advance_battle_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_advance_battle_create_2
+      description: 'Advance Battle sub-action: pick defender faction in Warlord''s
+        clearing.'
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/advance/move/:
+    get:
+      operationId: rats_daylight_advance_move_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_advance_move_create
+      description: |-
+        Advance Move sub-action: pick destination clearing, then warrior count.
+
+        Origin is always the Warlord's current clearing.
+        count=0 is valid (Warlord moves alone).
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/advance/move/{game_id}/{route}/:
+    get:
+      operationId: rats_daylight_advance_move_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_advance_move_create_2
+      description: |-
+        Advance Move sub-action: pick destination clearing, then warrior count.
+
+        Origin is always the Warlord's current clearing.
+        count=0 is valid (Warlord moves alone).
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/command/:
+    get:
+      operationId: rats_daylight_command_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_command_create
+      description: 'COMMAND step: choose Move / Battle / Build or end the command
+        phase.'
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/command/{game_id}/{route}/:
+    get:
+      operationId: rats_daylight_command_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_command_create_2
+      description: 'COMMAND step: choose Move / Battle / Build or end the command
+        phase.'
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/command/battle/:
+    get:
+      operationId: rats_daylight_command_battle_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+    post:
+      operationId: rats_daylight_command_battle_create
+      description: 'Command Battle sub-action: clearing → defender faction.'
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/command/battle/{game_id}/{route}/:
+    get:
+      operationId: rats_daylight_command_battle_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+    post:
+      operationId: rats_daylight_command_battle_create_2
+      description: 'Command Battle sub-action: clearing → defender faction.'
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/command/build/:
+    get:
+      operationId: rats_daylight_command_build_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_command_build_create
+      description: 'Command Build sub-action: card → clearing.'
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/command/build/{game_id}/{route}/:
+    get:
+      operationId: rats_daylight_command_build_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_command_build_create_2
+      description: 'Command Build sub-action: card → clearing.'
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/command/move/:
+    get:
+      operationId: rats_daylight_command_move_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+    post:
+      operationId: rats_daylight_command_move_create
+      description: 'Command Move sub-action: origin → destination → count.'
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/command/move/{game_id}/{route}/:
+    get:
+      operationId: rats_daylight_command_move_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+    post:
+      operationId: rats_daylight_command_move_create_2
+      description: 'Command Move sub-action: origin → destination → count.'
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/craft/:
+    get:
+      operationId: rats_daylight_craft_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_craft_create
+      description: 'CRAFT step: select a card and use Strongholds to craft it.'
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/daylight/craft/{game_id}/{route}/:
+    get:
+      operationId: rats_daylight_craft_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_daylight_craft_create_2
+      description: 'CRAFT step: select a card and use Strongholds to craft it.'
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/evening/discard/:
+    get:
+      operationId: rats_evening_discard_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_evening_discard_create
+      description: |-
+        DISCARD step: discard cards until hand has 5 or fewer.
+
+        step_effect auto-advances past DISCARD when hand ≤ 5 on entry,
+        so this view only fires when the player genuinely has excess cards.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/evening/discard/{game_id}/{route}/:
+    get:
+      operationId: rats_evening_discard_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_evening_discard_create_2
+      description: |-
+        DISCARD step: discard cards until hand has 5 or fewer.
+
+        step_effect auto-advances past DISCARD when hand ≤ 5 on entry,
+        so this view only fires when the player genuinely has excess cards.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/evening/incite/:
+    get:
+      operationId: rats_evening_incite_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_evening_incite_create
+      description: |-
+        INCITE step: optionally spend a card to place a Mob token.
+
+        Two-step flow:
+          GET  → show eligible clearings + Skip option
+          POST clearing → show matching hand cards
+          POST card     → call incite(player, clearing, card)  or  end_incite_step
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/evening/incite/{game_id}/{route}/:
+    get:
+      operationId: rats_evening_incite_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_evening_incite_create_2
+      description: |-
+        INCITE step: optionally spend a card to place a Mob token.
+
+        Two-step flow:
+          GET  → show eligible clearings + Skip option
+          POST clearing → show matching hand cards
+          POST card     → call incite(player, clearing, card)  or  end_incite_step
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/bitter-resolve/:
+    get:
+      operationId: rats_events_bitter_resolve_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_bitter_resolve_create
+      description: |-
+        BITTER_RESOLVE event: optionally absorb mobs to reinforce the Warlord's clearing.
+
+        Player picks a clearing (Warlord's or adjacent) that contains a Mob token
+        to absorb — removing the mob and placing a warrior in the Warlord's clearing.
+        Repeat as desired, then press End to proceed to the dice roll.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/bitter-resolve/{game_id}/{route}/:
+    get:
+      operationId: rats_events_bitter_resolve_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_bitter_resolve_create_2
+      description: |-
+        BITTER_RESOLVE event: optionally absorb mobs to reinforce the Warlord's clearing.
+
+        Player picks a clearing (Warlord's or adjacent) that contains a Mob token
+        to absorb — removing the mob and placing a warrior in the Warlord's clearing.
+        Repeat as desired, then press End to proceed to the dice roll.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/hoard-too-full/:
+    get:
+      operationId: rats_events_hoard_too_full_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_hoard_too_full_create
+      description: |-
+        HOARD_TOO_FULL event: player must discard one item from the overfull track.
+
+        Scores 1 VP for the discarded item, then resolves the event.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/hoard-too-full/{game_id}/{route}/:
+    get:
+      operationId: rats_events_hoard_too_full_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_hoard_too_full_create_2
+      description: |-
+        HOARD_TOO_FULL event: player must discard one item from the overfull track.
+
+        Scores 1 VP for the discarded item, then resolves the event.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/jubilant-mob-spread/:
+    get:
+      operationId: rats_events_jubilant_mob_spread_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_jubilant_mob_spread_create
+      description: |-
+        JUBILANT_MOB_SPREAD event: after Incite in the Warlord's clearing (Jubilant mood),
+        the player may roll the mob die up to 4 times and place mobs in adjacent clearings.
+
+        States:
+          - current_roll is None → "roll or end" prompt
+          - current_roll is set  → clearing picker for that suit
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/jubilant-mob-spread/{game_id}/{route}/:
+    get:
+      operationId: rats_events_jubilant_mob_spread_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_jubilant_mob_spread_create_2
+      description: |-
+        JUBILANT_MOB_SPREAD event: after Incite in the Warlord's clearing (Jubilant mood),
+        the player may roll the mob die up to 4 times and place mobs in adjacent clearings.
+
+        States:
+          - current_roll is None → "roll or end" prompt
+          - current_roll is set  → clearing picker for that suit
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/lavish/:
+    get:
+      operationId: rats_events_lavish_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_lavish_create
+      description: |-
+        LAVISH event: at end of Birdsong, player may remove any number of Hoard
+        items permanently — each yields 2 warriors in the Warlord's clearing.
+
+        Single-step UI: show all remaining Hoard items as options plus an End option.
+        Posting an empty item_id ends the event; posting an item_id liquidates that item.
+        Re-renders after each liquidation until the player ends or the Hoard is empty.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/lavish/{game_id}/{route}/:
+    get:
+      operationId: rats_events_lavish_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_lavish_create_2
+      description: |-
+        LAVISH event: at end of Birdsong, player may remove any number of Hoard
+        items permanently — each yields 2 warriors in the Warlord's clearing.
+
+        Single-step UI: show all remaining Hoard items as options plus an End option.
+        Posting an empty item_id ends the event; posting an item_id liquidates that item.
+        Re-renders after each liquidation until the player ends or the Hoard is empty.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/looting/:
+    get:
+      operationId: rats_events_looting_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_looting_create
+      description: |-
+        LOOTING event: player chooses which item to take from the looted player.
+
+        Only created when the defender has multiple items (single-item loot is auto-resolved).
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/events/looting/{game_id}/{route}/:
+    get:
+      operationId: rats_events_looting_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_events_looting_create_2
+      description: |-
+        LOOTING event: player chooses which item to take from the looted player.
+
+        Only created when the defender has multiple items (single-item loot is auto-resolved).
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/player-info/{game_id}/:
+    get:
+      operationId: rats_player_info_retrieve
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rats'
+          description: ''
+  /api/rats/setup/confirm-completed-setup/:
+    get:
+      operationId: rats_setup_confirm_completed_setup_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+    post:
+      operationId: rats_setup_confirm_completed_setup_create
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/setup/confirm-completed-setup/{game_id}/{route}/:
+    get:
+      operationId: rats_setup_confirm_completed_setup_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+    post:
+      operationId: rats_setup_confirm_completed_setup_create_2
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/setup/pick-corner/:
+    get:
+      operationId: rats_setup_pick_corner_retrieve
+      description: Return initial step data.
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_setup_pick_corner_create
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+  /api/rats/setup/pick-corner/{game_id}/{route}/:
+    get:
+      operationId: rats_setup_pick_corner_retrieve_2
+      description: Return initial step data.
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: rats_setup_pick_corner_create_2
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: route
+        schema:
+          type: string
+        required: true
+      tags:
+      - rats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameActionStep'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
   /api/token/:
     post:
       operationId: token_create
@@ -6744,6 +8553,45 @@ components:
         * `M` - Move
         * `B` - Battle
         * `U` - Build
+    CommandItemEntry:
+      type: object
+      properties:
+        item:
+          type: object
+          properties:
+            value:
+              enum:
+              - '0'
+              - '1'
+              - '2'
+              - '3'
+              - '4'
+              - '5'
+              - '6'
+              type: string
+              description: |-
+                * `0` - 0
+                * `1` - 1
+                * `2` - 2
+                * `3` - 3
+                * `4` - 4
+                * `5` - 5
+                * `6` - 6
+            label:
+              type: string
+              enum:
+              - Bag
+              - Boots
+              - Coin
+              - Crossbow
+              - Hammer
+              - Sword
+              - Tea
+          required:
+          - value
+          - label
+      required:
+      - item
     CraftableItem:
       type: object
       properties:
@@ -6875,6 +8723,13 @@ components:
           type: string
       required:
       - route
+    CurrentMood:
+      type: object
+      properties:
+        mood_type:
+          $ref: '#/components/schemas/MoodTypeEnum'
+      required:
+      - mood_type
     DominanceSupplyEntry:
       type: object
       properties:
@@ -6913,6 +8768,7 @@ components:
               - wa
               - cr
               - mo
+              - ra
               type: string
               description: |-
                 * `ca` - ca
@@ -6920,6 +8776,7 @@ components:
                 * `wa` - wa
                 * `cr` - cr
                 * `mo` - mo
+                * `ra` - ra
             label:
               type: string
               enum:
@@ -6927,6 +8784,7 @@ components:
               - Cats
               - Crows
               - Moles
+              - Rats
               - Woodland Alliance
           required:
           - value
@@ -6948,6 +8806,7 @@ components:
               - wa
               - cr
               - mo
+              - ra
               type: string
               description: |-
                 * `ca` - ca
@@ -6955,6 +8814,7 @@ components:
                 * `wa` - wa
                 * `cr` - cr
                 * `mo` - mo
+                * `ra` - ra
             label:
               type: string
               enum:
@@ -6962,6 +8822,7 @@ components:
               - Cats
               - Crows
               - Moles
+              - Rats
               - Woodland Alliance
           required:
           - value
@@ -7115,6 +8976,7 @@ components:
               - VB
               - CROW
               - MOL
+              - RAT
               - COMP
               type: string
               description: |-
@@ -7125,6 +8987,7 @@ components:
                 * `VB` - VB
                 * `CROW` - CROW
                 * `MOL` - MOL
+                * `RAT` - RAT
                 * `COMP` - COMP
             label:
               type: string
@@ -7135,6 +8998,7 @@ components:
               - Crows Setup
               - Initial Setup
               - Moles Setup
+              - Rats Setup
               - Vagabond Setup
               - Woodland Alliance Setup
           required:
@@ -7214,6 +9078,7 @@ components:
       - CROWS_RAID
       - CROWS_SETUP_PLACE_WARRIOR
       - CROWS_EXTORTION_STOLE_CARD
+      - RATS_BUILD
       - MOLES_SETUP_PICK_CORNER
       - MOLES_BIRDSONG_PLACE_WARRIORS
       - MOLES_BUILD
@@ -7279,6 +9144,7 @@ components:
         * `CROWS_RAID` - Crows Raid
         * `CROWS_SETUP_PLACE_WARRIOR` - Crows Setup Place Warrior
         * `CROWS_EXTORTION_STOLE_CARD` - Crows Extortion Stole Card
+        * `RATS_BUILD` - Rats Build
         * `MOLES_SETUP_PICK_CORNER` - Moles Setup Pick Corner
         * `MOLES_BIRDSONG_PLACE_WARRIORS` - Moles Birdsong Place Warriors
         * `MOLES_BUILD` - Moles Build
@@ -7298,6 +9164,13 @@ components:
         * `MOLES_PRICE_OF_FAILURE` - Moles Price of Failure
         * `CATS_FIELD_HOSPITALS` - Field Hospitals
         * `CRAFTED_CARD_ACTION` - Crafted Card Action
+    Mob:
+      type: object
+      properties:
+        token:
+          $ref: '#/components/schemas/Token'
+      required:
+      - token
     Moles:
       type: object
       description: Serializer to provide all (public) information about moles
@@ -7405,6 +9278,26 @@ components:
             $ref: '#/components/schemas/MolesNestedToken'
       required:
       - tunnels
+    MoodTypeEnum:
+      enum:
+      - bitter
+      - grandiose
+      - jubilant
+      - lavish
+      - relentless
+      - rowdy
+      - stubborn
+      - wrathful
+      type: string
+      description: |-
+        * `bitter` - Bitter
+        * `grandiose` - Grandiose
+        * `jubilant` - Jubilant
+        * `lavish` - Lavish
+        * `relentless` - Relentless
+        * `rowdy` - Rowdy
+        * `stubborn` - Stubborn
+        * `wrathful` - Wrathful
     NestedToken:
       type: object
       properties:
@@ -7454,6 +9347,7 @@ components:
               - wa
               - cr
               - mo
+              - ra
               type: string
               description: |-
                 * `ca` - ca
@@ -7461,6 +9355,7 @@ components:
                 * `wa` - wa
                 * `cr` - cr
                 * `mo` - mo
+                * `ra` - ra
             label:
               type: string
               enum:
@@ -7468,6 +9363,7 @@ components:
               - Cats
               - Crows
               - Moles
+              - Rats
               - Woodland Alliance
           required:
           - value
@@ -7495,6 +9391,99 @@ components:
       - score
       - turn_order
       - username
+    ProwessItemEntry:
+      type: object
+      properties:
+        item:
+          type: object
+          properties:
+            value:
+              enum:
+              - '0'
+              - '1'
+              - '2'
+              - '3'
+              - '4'
+              - '5'
+              - '6'
+              type: string
+              description: |-
+                * `0` - 0
+                * `1` - 1
+                * `2` - 2
+                * `3` - 3
+                * `4` - 4
+                * `5` - 5
+                * `6` - 6
+            label:
+              type: string
+              enum:
+              - Bag
+              - Boots
+              - Coin
+              - Crossbow
+              - Hammer
+              - Sword
+              - Tea
+          required:
+          - value
+          - label
+      required:
+      - item
+    Rats:
+      type: object
+      description: Serializer to provide all (public) information about rats (Lord
+        of the Hundreds).
+      properties:
+        player:
+          $ref: '#/components/schemas/PlayerPublic'
+        warriors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warrior'
+        warlord:
+          $ref: '#/components/schemas/Warlord'
+        buildings:
+          $ref: '#/components/schemas/RatsBuildings'
+        mobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mob'
+        mood:
+          $ref: '#/components/schemas/CurrentMood'
+        valid_moods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidMoodsEnum'
+        command_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommandItemEntry'
+        prowess_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProwessItemEntry'
+      required:
+      - buildings
+      - command_items
+      - mobs
+      - mood
+      - player
+      - prowess_items
+      - valid_moods
+      - warlord
+      - warriors
+    RatsBuildings:
+      type: object
+      description: Wraps Rats buildings under a 'buildings' key so the frontend buildingTable
+        hook can tabulate them.
+      properties:
+        strongholds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stronghold'
+      required:
+      - strongholds
     Recruiter:
       type: object
       properties:
@@ -7520,6 +9509,7 @@ components:
               - wa
               - cr
               - mo
+              - ra
               type: string
               description: |-
                 * `ca` - ca
@@ -7527,6 +9517,7 @@ components:
                 * `wa` - wa
                 * `cr` - cr
                 * `mo` - mo
+                * `ra` - ra
             label:
               type: string
               enum:
@@ -7534,6 +9525,7 @@ components:
               - Cats
               - Crows
               - Moles
+              - Rats
               - Woodland Alliance
           required:
           - value
@@ -7563,6 +9555,15 @@ components:
         building:
           $ref: '#/components/schemas/Building'
         used:
+          type: boolean
+      required:
+      - building
+    Stronghold:
+      type: object
+      properties:
+        building:
+          $ref: '#/components/schemas/Building'
+        crafted_with:
           type: boolean
       required:
       - building
@@ -7627,6 +9628,26 @@ components:
           type: string
       required:
       - status
+    ValidMoodsEnum:
+      enum:
+      - bitter
+      - grandiose
+      - jubilant
+      - lavish
+      - relentless
+      - rowdy
+      - stubborn
+      - wrathful
+      type: string
+      description: |-
+        * `bitter` - Bitter
+        * `grandiose` - Grandiose
+        * `jubilant` - Jubilant
+        * `lavish` - Lavish
+        * `relentless` - Relentless
+        * `rowdy` - Rowdy
+        * `stubborn` - Stubborn
+        * `wrathful` - Wrathful
     ValidationError:
       type: object
       properties:
@@ -7721,6 +9742,15 @@ components:
             $ref: '#/components/schemas/WASympathy'
       required:
       - sympathy
+    Warlord:
+      type: object
+      properties:
+        clearing_number:
+          type: integer
+          nullable: true
+          readOnly: true
+      required:
+      - clearing_number
     Warrior:
       type: object
       properties:

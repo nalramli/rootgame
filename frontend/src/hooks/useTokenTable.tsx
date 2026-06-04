@@ -11,9 +11,6 @@ export type TokenTableType = {
 
 const tabulateTokens = (faction: FactionLabel, data: any) => {
   const tokenTable: TokenTableType[] = [];
-  // if (!("tokens" in data)) {
-  //   return tokenTable;
-  // }
   type TokenItem = {
     player_name: string;
     clearing_number: number;
@@ -21,8 +18,9 @@ const tabulateTokens = (faction: FactionLabel, data: any) => {
   type TokenWrapper = {
     token: TokenItem;
   };
+
+  // Generic tokens object: { tokenType: TokenWrapper[] }
   const tokens: Record<string, TokenWrapper[]> = data?.tokens ?? {};
-  if (!tokens) return tokenTable;
   for (const tokenType of Object.keys(tokens)) {
     const tokensOfType = tokens[tokenType] ?? [];
     for (const token of tokensOfType) {
@@ -33,6 +31,7 @@ const tabulateTokens = (faction: FactionLabel, data: any) => {
       });
     }
   }
+
   return tokenTable;
 };
 

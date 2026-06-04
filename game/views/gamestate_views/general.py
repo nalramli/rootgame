@@ -1,8 +1,9 @@
 from django.urls import reverse
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.exceptions import ValidationError
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
 
@@ -302,6 +303,21 @@ def get_craftable_items(request, game_id: int):
     craftable_items = CraftableItemEntry.objects.filter(game=game).select_related('item')
     serializer = CraftableItemSerializer(craftable_items, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@extend_schema(responses={204: None})
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_game(request, game_id: int):
+    """Delete a game. Only the owner may do this."""
+    try:
+        game = Game.objects.get(pk=game_id)
+    except Game.DoesNotExist:
+        return Response({"detail": "Game not found"}, status=status.HTTP_404_NOT_FOUND)
+    if game.owner != request.user:
+        raise PermissionDenied("Only the game owner can delete this game.")
+    game.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 from game.serializers.logs import GameLogSerializer
 from game.models.game_log import GameLog

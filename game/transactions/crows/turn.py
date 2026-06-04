@@ -48,6 +48,11 @@ def step_effect(
     ex: drawing or launching events
     typically called from next_step
     """
+    # Guard: if any events are still unresolved, don't advance the step machine.
+    from game.queries.current_action.events import get_current_event
+    if get_current_event(player.game) is not None:
+        return
+
     if phase is None:
         phase = get_phase(player)
     

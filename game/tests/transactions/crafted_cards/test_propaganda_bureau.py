@@ -13,8 +13,11 @@ from game.models.game_models import (
     HandEntry,
 )
 from game.models.birds.turn import BirdTurn, BirdBirdsong, BirdDaylight, BirdEvening
+from game.models.events.setup import GameSimpleSetup
+from game.models.rats.tokens import Warlord
 from game.game_data.cards.exiles_and_partisans import CardsEP
 from game.transactions.crafted_cards.propaganda_bureau import use_propaganda_bureau
+from game.transactions.rats_setup import pick_corner as rats_pick_corner, confirm_completed_setup as rats_confirm_setup
 
 from game.tests.my_factories import (
     GameFactory,
@@ -25,6 +28,7 @@ from game.tests.my_factories import (
     HandEntryFactory,
     ClearingFactory,
     WarriorFactory,
+    GameSetupFactory,
 )
 
 
@@ -149,3 +153,91 @@ class TestPropagandaBureauTransaction(TestCase):
             use_propaganda_bureau(
                 self.player, card_ep, self.clearing_fox, target_faction
             )
+
+
+class TestPropagandaBureauRatsTarget(TestCase):
+    """Propaganda Bureau used against the Rats faction.
+
+    The Warlord is immune to PB — it must never be converted.
+    """
+
+    def setUp(self):
+        # Full game setup so Rats get their Warlord and RatsPlayerState.
+        self.game = GameSetupFactory(factions=[Faction.BIRDS, Faction.RATS])
+        self.birds_player = self.game.players.get(faction=Faction.BIRDS)
+        self.rats_player = self.game.players.get(faction=Faction.RATS)
+
+        # Complete Rats setup so the Warlord is placed on the board.
+        game_setup = GameSimpleSetup.objects.get(game=self.game)
+        game_setup.status = GameSimpleSetup.GameSetupStatus.RATS_SETUP
+        game_setup.save()
+
+        self.corner = Clearing.objects.get(game=self.game, clearing_number=2)
+        rats_pick_corner(self.rats_player, self.corner)
+        rats_confirm_setup(self.rats_player)
+
+        self.warlord = Warlord.objects.get(player=self.rats_player)
+
+        # Put Birds in Daylight so PB is usable.
+        from game.models.birds.turn import BirdBirdsong, BirdDaylight
+        bird_turn = BirdTurn.create_turn(self.birds_player)
+        birdsong = BirdBirdsong.objects.filter(turn=bird_turn).first()
+        birdsong.step = BirdBirdsong.BirdBirdsongSteps.COMPLETED
+        birdsong.save()
+        daylight = BirdDaylight.objects.filter(turn=bird_turn).first()
+        daylight.step = "1"
+        daylight.save()
+
+        # Give Birds a PB card and a Fox card to spend.
+        pb_card = CardFactory(game=self.game, card_type=CardsEP.PROPAGANDA_BUREAU.name)
+        self.fox_card = CardFactory(game=self.game, card_type=CardsEP.FOXFOLK_STEEL.name)
+        self.crafted_pb = CraftedCardEntryFactory(
+            player=self.birds_player,
+            card=pb_card,
+            used=CraftedCardEntry.UsedChoice.UNUSED,
+        )
+        HandEntryFactory(player=self.birds_player, card=self.fox_card)
+
+        # Fox clearing for the action.
+        self.clearing = Clearing.objects.filter(game=self.game, suit=Suit.RED).first()
+        if self.clearing is None:
+            self.clearing = ClearingFactory(game=self.game, suit=Suit.RED, clearing_number=7)
+
+    def _place_warlord_in_clearing(self):
+        self.warlord.clearing = self.clearing
+        self.warlord.save()
+
+    def test_only_warlord_present_raises(self):
+        """PB targeting a clearing with only the Warlord must fail — Warlord is immune."""
+        self._place_warlord_in_clearing()
+
+        with self.assertRaises(IllegalActionError):
+            use_propaganda_bureau(
+                self.birds_player, CardsEP.FOXFOLK_STEEL, self.clearing, Faction.RATS
+            )
+
+        # Warlord must remain in the clearing.
+        self.warlord.refresh_from_db()
+        self.assertEqual(self.warlord.clearing, self.clearing)
+
+    def test_warlord_plus_regular_warrior_converts_regular(self):
+        """PB with Warlord + regular warrior must remove the regular warrior, not the Warlord."""
+        self._place_warlord_in_clearing()
+        regular = WarriorFactory(player=self.rats_player, clearing=self.clearing)
+
+        use_propaganda_bureau(
+            self.birds_player, CardsEP.FOXFOLK_STEEL, self.clearing, Faction.RATS
+        )
+
+        # Regular warrior removed from board.
+        regular.refresh_from_db()
+        self.assertIsNone(regular.clearing)
+
+        # Warlord untouched.
+        self.warlord.refresh_from_db()
+        self.assertEqual(self.warlord.clearing, self.clearing)
+
+        # A Birds warrior was placed in the clearing.
+        self.assertTrue(
+            Warrior.objects.filter(player=self.birds_player, clearing=self.clearing).exists()
+        )

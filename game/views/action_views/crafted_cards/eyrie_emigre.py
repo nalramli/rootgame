@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from game.views.action_views.general import GameActionView
+from game.views.action_views.rats.interceptors import WarlordMoveInterceptorView
 from game.models.game_models import Faction, Player, Clearing
 from game.models.events.crafted_cards import EyrieEmigreEvent
 from game.models.events.event import EventType
@@ -22,6 +23,7 @@ from game.decorators.transaction_decorator import atomic_game_action
 
 
 class EyrieEmigreView(GameActionView):
+    interceptors = [{"view": WarlordMoveInterceptorView()}]
     def get(self, request, *args, **kwargs):
         game_id = kwargs.get("game_id") or request.query_params.get("game_id")
         player = self.player(request, game_id)
@@ -65,6 +67,8 @@ class EyrieEmigreView(GameActionView):
                 return self.post_destination(request, game_id)
             case "count":
                 return self.post_count(request, game_id)
+            case "execute_move":
+                return self.post_execute_move(request, game_id)
             case "battle_choice":
                 return self.post_battle_choice(request, game_id)
             case "battle":
@@ -149,39 +153,40 @@ class EyrieEmigreView(GameActionView):
         )
 
     def post_count(self, request, game_id):
-        player = self.player(request, game_id)
         origin_clearing_number = int(request.data["origin_clearing"])
         destination_clearing_number = int(request.data["destination_clearing"])
         count = int(request.data["count"])
-        event = self.get_event(game_id)
+        return self.generate_completing_step(
+            accumulated_payload={
+                "origin_clearing": origin_clearing_number,
+                "destination_clearing": destination_clearing_number,
+                "count": count,
+            },
+            request=request,
+            game_id=game_id,
+            execution_route="execute_move",
+        )
 
+    def post_execute_move(self, request, game_id):
+        event = self.get_event(game_id)
         try:
-            origin_clearing = Clearing.objects.get(
-                game_id=game_id, clearing_number=origin_clearing_number
+            origin = Clearing.objects.get(
+                game_id=game_id, clearing_number=int(request.data["origin_clearing"])
             )
-            destination_clearing = Clearing.objects.get(
-                game_id=game_id, clearing_number=destination_clearing_number
+            destination = Clearing.objects.get(
+                game_id=game_id, clearing_number=int(request.data["destination_clearing"])
             )
         except Clearing.DoesNotExist:
             raise ValidationError({"detail": "Clearing not found"})
-
+        count = int(request.data["count"])
+        move_warlord = bool(request.data.get("move_warlord", False))
         try:
             atomic_game_action(emigre_move)(
-                event, origin_clearing, destination_clearing, count
+                event, origin, destination, count, move_warlord=move_warlord
             )
         except ValueError as e:
             raise ValidationError({"detail": str(e)})
-
-        try:
-            event.refresh_from_db()
-        except EyrieEmigreEvent.DoesNotExist:
-            # Event was deleted due to failure (no enemies in destination)
-            return self.generate_completed_step()
-
-        if event.event.is_resolved:
-            return self.generate_completed_step()
-
-        return self.get_battle_step(event, player)
+        return self.generate_completed_step()
 
     def get_battle_step(self, event, player):
         options = [

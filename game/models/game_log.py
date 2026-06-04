@@ -58,6 +58,21 @@ class LogType(models.TextChoices):
     CROWS_SETUP_PLACE_WARRIOR = "CROWS_SETUP_PLACE_WARRIOR", "Crows Setup Place Warrior"
     CROWS_EXTORTION_STOLE_CARD = "CROWS_EXTORTION_STOLE_CARD", "Crows Extortion Stole Card"
 
+    # Rats specific action logs
+    RATS_BUILD             = "RATS_BUILD",             "Rats Build"
+    RATS_RAZE              = "RATS_RAZE",              "Rats Raze"
+    RATS_MOB_SPREAD        = "RATS_MOB_SPREAD",        "Rats Mob Spread"
+    RATS_RECRUIT           = "RATS_RECRUIT",           "Rats Recruit"
+    RATS_ANOINT            = "RATS_ANOINT",            "Rats Anoint"
+    RATS_CHOOSE_MOOD       = "RATS_CHOOSE_MOOD",       "Rats Choose Mood"
+    RATS_INCITE            = "RATS_INCITE",            "Rats Incite"
+    RATS_OPPRESS           = "RATS_OPPRESS",           "Rats Oppress"
+    RATS_HOARD_DISCARD     = "RATS_HOARD_DISCARD",     "Rats Hoard Discard"
+    RATS_LOOT              = "RATS_LOOT",              "Rats Loot"
+    RATS_BITTER_ABSORB     = "RATS_BITTER_ABSORB",     "Rats Bitter Absorb"
+    RATS_LAVISH_LIQUIDATE  = "RATS_LAVISH_LIQUIDATE",  "Rats Lavish Liquidate"
+    RATS_JUBILANT_SPREAD   = "RATS_JUBILANT_SPREAD",   "Rats Jubilant Spread"
+
     # Moles specific action logs
     MOLES_SETUP_PICK_CORNER = "MOLES_SETUP_PICK_CORNER", "Moles Setup Pick Corner"
     MOLES_BIRDSONG_PLACE_WARRIORS = "MOLES_BIRDSONG_PLACE_WARRIORS", "Moles Birdsong Place Warriors"

@@ -3,6 +3,7 @@ from game.models.birds.setup import BirdsSimpleSetup
 from game.models.cats.setup import CatsSimpleSetup
 from game.models.crows.setup import CrowsSimpleSetup
 from game.models.moles.setup import MolesSimpleSetup
+from game.models.rats.setup import RatsSimpleSetup
 from game.models.events.setup import GameSimpleSetup
 from game.models.game_models import Faction, Game, Player
 
@@ -28,6 +29,8 @@ def get_setup_action(game: Game) -> str | None:
             return get_crows_setup_action(game)
         case GameSimpleSetup.GameSetupStatus.MOLES_SETUP:
             return get_moles_setup_action(game)
+        case GameSimpleSetup.GameSetupStatus.RATS_SETUP:
+            return get_rats_setup_action(game)
         case GameSimpleSetup.GameSetupStatus.COMPLETED:
             return None
         case _:
@@ -88,3 +91,16 @@ def get_moles_setup_action(game: Game) -> str | None:
             return reverse("moles-setup-confirm-completed-setup")
         case _:
             raise ValueError("Invalid moles setup step")
+
+
+def get_rats_setup_action(game: Game) -> str | None:
+    """Return the current rats setup action route for the game or raises if unexpected step."""
+    rats_player = Player.objects.get(game=game, faction=Faction.RATS)
+    rats_setup = RatsSimpleSetup.objects.get(player=rats_player)
+    match rats_setup.step:
+        case RatsSimpleSetup.Steps.PICKING_CORNER:
+            return reverse("rats-setup-pick-corner")
+        case RatsSimpleSetup.Steps.PENDING_CONFIRMATION:
+            return reverse("rats-setup-confirm-completed-setup")
+        case _:
+            raise ValueError("Invalid rats setup step")

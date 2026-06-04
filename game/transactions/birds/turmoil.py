@@ -114,5 +114,5 @@ def turmoil_choose_new_leader(player: Player, leader: BirdLeader):
     daylight.save()
 
     # activate step effects for end of daylight
-    from game.transactions.birds.turn import step_effect
+    from game.transactions.general import step_effect
     step_effect(player)

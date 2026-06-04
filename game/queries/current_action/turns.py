@@ -14,6 +14,8 @@ from game.queries.cats.turn import get_phase as get_cats_phase
 from game.queries.birds.turn import get_phase as get_birds_phase
 from game.queries.wa.turn import get_phase as get_wa_phase
 from game.queries.moles.turn import get_phase as get_moles_phase
+from game.models.rats.turn import RatsBirdsong, RatsDaylight, RatsEvening
+from game.queries.rats.turn import get_phase as get_rats_phase
 
 
 def get_current_turn_action(game: Game) -> str | None:
@@ -39,6 +41,8 @@ def get_current_turn_action(game: Game) -> str | None:
             return get_crows_turn_action(player)
         case Faction.MOLES:
             return get_moles_turn_action(player)
+        case Faction.RATS:
+            return get_rats_turn_action(player)
         case _:
             raise ValueError("Invalid faction")
 
@@ -282,4 +286,53 @@ def get_moles_evening_turn_action(phase: MoleEvening):
         case MoleEvening.MoleEveningSteps.COMPLETED:
             return None
         case _:
+            return None
+
+
+def get_rats_turn_action(player: Player) -> str | None:
+    """Return the current rats turn action route for the player or raises if unexpected step."""
+    phase = get_rats_phase(player)
+    match phase:
+        case RatsBirdsong():
+            return get_rats_birdsong_turn_action(phase)
+        case RatsDaylight():
+            return get_rats_daylight_turn_action(phase)
+        case RatsEvening():
+            return get_rats_evening_turn_action(phase)
+        case _:
+            raise ValueError(f"Invalid rats phase: {phase}")
+
+
+def get_rats_birdsong_turn_action(phase: RatsBirdsong) -> str | None:
+    match phase.step:
+        case RatsBirdsong.Steps.SPREAD_MOB:
+            return reverse("rats-birdsong-spread-mob")
+        case RatsBirdsong.Steps.CHOOSE_MOOD:
+            return reverse("rats-birdsong-choose-mood")
+        case _:
+            # All other steps (RAZE, RECRUIT, ANOINT, BEFORE_END, COMPLETED, NOT_STARTED)
+            # are handled automatically by step_effect
+            return None
+
+
+def get_rats_daylight_turn_action(phase: RatsDaylight) -> str | None:
+    match phase.step:
+        case RatsDaylight.Steps.CRAFT:
+            return reverse("rats-daylight-craft")
+        case RatsDaylight.Steps.COMMAND:
+            return reverse("rats-daylight-command")
+        case RatsDaylight.Steps.ADVANCE:
+            return reverse("rats-daylight-advance")
+        case _:
+            return None
+
+
+def get_rats_evening_turn_action(phase: RatsEvening) -> str | None:
+    match phase.step:
+        case RatsEvening.Steps.INCITE:
+            return reverse("rats-evening-incite")
+        case RatsEvening.Steps.DISCARD:
+            return reverse("rats-evening-discard")
+        case _:
+            # OPPRESS, DRAW, BEFORE_END, COMPLETED — auto-fire or end-of-turn
             return None

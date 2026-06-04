@@ -19,6 +19,7 @@ from game.serializers.cat_serializers import CatSerializer, CatTurnSerializer
 from game.serializers.wa_serializers import WASerializer, WATurnSerializer
 from game.serializers.crows_serializers import CrowsSerializer, CrowTurnSerializer
 from game.serializers.moles_serializers import MolesSerializer, MoleTurnSerializer
+from game.serializers.rats_serializers import RatsSerializer, RatsTurnSerializer
 from game.serializers.general_serializers import (
     CardSerializer,
     DominanceSupplyEntrySerializer,
@@ -157,6 +158,7 @@ class GameStateSerializer(serializers.ModelSerializer):
         from game.models.wa.turn import WATurn
         from game.models.crows.turn import CrowTurn
         from game.models.moles.turn import MoleTurn
+        from game.models.rats.turn import RatsTurn
 
         if player.faction == Faction.BIRDS:
             turn_obj = BirdTurn.objects.filter(player=player).last()
@@ -182,6 +184,11 @@ class GameStateSerializer(serializers.ModelSerializer):
             turn_obj = MoleTurn.objects.filter(player=player).last()
             if turn_obj:
                 return MoleTurnSerializer(turn_obj).data
+
+        elif player.faction == Faction.RATS:
+            turn_obj = RatsTurn.objects.filter(player=player).last()
+            if turn_obj:
+                return RatsTurnSerializer(turn_obj).data
 
         return None
 
@@ -229,6 +236,8 @@ class GameStateSerializer(serializers.ModelSerializer):
                 p_data["faction_state"] = CrowsSerializer.from_player(player).data
             elif player.faction == Faction.MOLES:
                 p_data["faction_state"] = MolesSerializer.from_player(player).data
+            elif player.faction == Faction.RATS:
+                p_data["faction_state"] = RatsSerializer.from_player(player).data
 
             players_data.append(p_data)
 

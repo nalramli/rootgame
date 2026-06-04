@@ -20,6 +20,7 @@ frontend/dist/
 #claude worktree
 .claude/worktrees/
 test_output.txt
+settings.local.json
 
 #local python activation script
 activate.bat

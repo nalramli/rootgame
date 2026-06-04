@@ -3,9 +3,21 @@ Table of Contents
 - [Introduction](#introduction)
   - [Tech Stack and design philosophy](#tech-stack-and-design-philosophy)
     - [Project Structure](#project-structure)
+      - [Backend](#backend)
     - [Action Flow](#action-flow)
   - [State of the Project](#state-of-the-project)
+      - [Implemented Features:](#implemented-features)
+      - [Not yet implemented:](#not-yet-implemented)
+    - [Frontend](#frontend)
+      - [MAP](#map)
+      - [Action Prompter](#action-prompter)
+      - [Cards In Hand](#cards-in-hand)
+      - [Top Row](#top-row)
+      - [Player Boards](#player-boards)
 - [Running Locally/Development](#running-locallydevelopment)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+  - [Run Locally with Docker](#run-locally-with-docker)
 
 # Introduction
 
@@ -59,17 +71,17 @@ Validation of timing and the player making requests is handled by the custom Gam
 
 ## State of the Project
 
-Games can be created and played, but right now there are only 4 factions: Cats, Birds, Woodland Alliance, and Crows. All basic game features are implemented and the core functions have been well tested. More factions will be added, more features will be provided, and the UI will be improved over time.
+Games can be created and played with 6 fully implemented factions. All basic game features are implemented and the core functions have been well tested. More factions will be added, more features will be provided, and the UI will be improved over time.
 
 #### Implemented Features:
 
 - Basic Setup Rules
-- 4 factions have been fully implemented: Cats, Birds, Woodland Alliance, and Crows.
+- 6 factions have been fully implemented: Cats, Birds, Woodland Alliance, Crows, Underground Duchy (Moles), and Riverfolk Company (Rats).
 - Cards can be crafted.
   - Cards with passive effects are checked for and handled in the appropriate business logic.
   - Cards with active effects also work, launching events if the action has a narrow timing window or are simply made available when usable if they have a broader timing window.
 - Game end conditions have been added.
-- Game Browser to create, join, and switch between games.
+- Game Browser to create, join, switch between, and delete games.
 - Undo functionality
 - Dominance Conditions/Dominance Swapping
 - Game Logs
@@ -119,13 +131,18 @@ Decree actions have a checkbox to indicate if the decree is used.
 
 ![Crows Player Board](images/crow_board.png)
 
+
+![Moles Player Board](images/moles_board.png)
+
+![Rats Player Board](images/rats_board.png)
+
 # Running Locally/Development
 
 ## Prerequisites
 
 - Python 3.10+
 - Node.js
-- Redis(optional)
+- Docker(optional)
 
 ## Setup
 
@@ -148,7 +165,7 @@ python manage.py shell
 >>> quit()
 ```
 
-To run the project locally, I use npm and vite to serve the frontend and django to run the backend. the packages for the frontend are listed in the package.json file and the packages for the backend are listed in the requirements.txt file. To run the backend, you will need to be in the project root and run:
+To run the project locally for development, I use npm and vite to serve the frontend and django to run the backend. the packages for the frontend are listed in the package.json file and the packages for the backend are listed in the requirements.txt file. To run the backend, you will need to be in the project root and run:
 
 `python manage.py runserver`
 
@@ -160,6 +177,12 @@ If all goes well, the frontend will be available at http://localhost:5173.
 
 In addition, Redis is used for the websocket connection to handle live updates. This isn't strictly needed for development but it may be a bit sluggish without it. The docker-compose.yml file is set up to run Redis locally in Docker and the app will be set up to use it automatically. If you have docker, at the root of this project folder run:
 
-`docker-compose up -d`
+`docker-compose up -d redis`
 
-to start the redis server.
+to start the redis service.
+
+## Run Locally with Docker
+
+The server can be run locally in Docker instead from an image, which has the advantage that you don't need to set up or install Python or Node.js. The disadvantage is that any changes will require a rebuild of the image, which is cumbersome for development. 
+
+The Docker image is not currently publicly available, but can be built using the dockerfile in the project root. Simply navigate to project root and call `docker-compose build web` to build the image, and when that is complete, run `docker-compose up -d web redis` to run the services. In this configuration, the project is served at http://localhost:8000. The first time this is run, the local database will still need to be migrated/created, which can be done inside docker with `docker-compose run --rm python manage.py migrate`.

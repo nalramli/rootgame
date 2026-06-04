@@ -93,20 +93,10 @@ def skip_informants(crafted_card_entry: CraftedCardEntry):
     if informants_event:
         informants_event.event.is_resolved = True
         informants_event.event.save()
-    # call faction draw_cards
+    # Resume the step machine via the general dispatcher (guarded against stacked events).
     player = crafted_card_entry.player
-    match player.faction:
-        case Faction.WOODLAND_ALLIANCE:
-            from game.transactions.wa import step_effect
-            step_effect(player)
-        case Faction.BIRDS:
-            from game.transactions.birds import step_effect
-            step_effect(player)
-        case Faction.CATS:
-            from game.transactions.cats import step_effect
-            step_effect(player)
-        case _:
-            raise ValueError("Faction not implemented yet in informants")
+    from game.transactions.general import step_effect
+    step_effect(player)
 
 
 @transaction.atomic

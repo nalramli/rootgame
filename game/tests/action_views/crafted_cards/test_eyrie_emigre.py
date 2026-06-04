@@ -83,10 +83,11 @@ class EyrieEmigreViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "count")
         
-        # 5. SUBMIT count -> battle_choice
+        # 5. SUBMIT count -> completed (move executes), then auto-GET -> battle_choice
         response = self.birds_client.submit_action({"number": 1})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["name"], "battle_choice")
+        self.assertEqual(response.data["name"], "completed")
+        self.assertEqual(self.birds_client.step["name"], "battle_choice")
         
         # 6. SUBMIT battle choice -> battle
         response = self.birds_client.submit_action({"choice": "battle"})

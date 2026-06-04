@@ -53,6 +53,35 @@ from game.views.action_views.setup.moles import (
     MolesPickCornerView,
     MolesConfirmCompletedSetupView,
 )
+from game.views.action_views.setup.rats import (
+    RatsPickCornerView,
+    RatsConfirmCompletedSetupView,
+)
+from game.views.action_views.rats.birdsong import (
+    RatsBirdsongSpreadMobView,
+    RatsBirdsongChooseMoodView,
+)
+from game.views.action_views.rats.daylight import (
+    RatsDaylightCraftView,
+    RatsDaylightCommandView,
+    RatsCommandMoveView,
+    RatsCommandBattleView,
+    RatsCommandBuildView,
+    RatsDaylightAdvanceView,
+    RatsAdvanceMoveView,
+    RatsAdvanceBattleView,
+)
+from game.views.action_views.rats.evening import (
+    RatsEveningInciteView,
+    RatsEveningDiscardView,
+)
+from game.views.action_views.rats.events import (
+    RatsHoardTooFullView,
+    RatsJubilantMobSpreadView,
+    RatsLavishView,
+    RatsLootingView,
+    RatsResolveBitterView,
+)
 from game.views.gamestate_views import (
     get_bird_player_public,
     get_cat_player_public,
@@ -61,6 +90,7 @@ from game.views.gamestate_views import (
     get_player_hand,
     get_wa_player_public,
     get_moles_player_public,
+    get_rats_player_public,
 )
 from game.views.gamestate_views.crows import (
     get_crows_player_public,
@@ -77,6 +107,7 @@ from game.views.gamestate_views.general import (
     get_revealed_cards,
     get_craftable_items,
     get_game_logs,
+    delete_game,
 )
 from game.views.gamestate_views.cards import GetCraftedCardsView
 from game.views.setup_views import (
@@ -132,6 +163,7 @@ urlpatterns = [
     path("api/crows/player-private-info/<int:game_id>/", get_crows_player_private),
     path("api/birds/player-info/<int:game_id>/", get_bird_player_public),
     path("api/moles/player-info/<int:game_id>/", get_moles_player_public),
+    path("api/rats/player-info/<int:game_id>/", get_rats_player_public),
     path("api/clearings/<int:game_id>/", get_clearings),
     path("api/discard-pile/<int:game_id>/", get_discard_pile),
     path("api/player-hand/<int:game_id>/", get_player_hand),
@@ -179,6 +211,11 @@ urlpatterns = [
         "api/game-log/<int:game_id>/",
         get_game_logs,
         name="get-game-logs",
+    ),
+    path(
+        "api/game/delete/<int:game_id>/",
+        delete_game,
+        name="delete-game",
     ),
 ]
 register_action(
@@ -248,6 +285,129 @@ register_action(
     "moles-setup-confirm-completed-setup",
     MolesConfirmCompletedSetupView,
     "api/moles/setup/confirm-completed-setup/",
+    urlpatterns,
+)
+
+# Rats setup
+register_action(
+    "rats-setup-pick-corner",
+    RatsPickCornerView,
+    "api/rats/setup/pick-corner/",
+    urlpatterns,
+)
+
+register_action(
+    "rats-setup-confirm-completed-setup",
+    RatsConfirmCompletedSetupView,
+    "api/rats/setup/confirm-completed-setup/",
+    urlpatterns,
+)
+
+# Rats birdsong
+register_action(
+    "rats-birdsong-spread-mob",
+    RatsBirdsongSpreadMobView,
+    "api/rats/birdsong/spread-mob/",
+    urlpatterns,
+)
+register_action(
+    "rats-birdsong-choose-mood",
+    RatsBirdsongChooseMoodView,
+    "api/rats/birdsong/choose-mood/",
+    urlpatterns,
+)
+
+# Rats daylight
+register_action(
+    "rats-daylight-craft",
+    RatsDaylightCraftView,
+    "api/rats/daylight/craft/",
+    urlpatterns,
+)
+register_action(
+    "rats-daylight-command",
+    RatsDaylightCommandView,
+    "api/rats/daylight/command/",
+    urlpatterns,
+)
+register_action(
+    "rats-daylight-command-move",
+    RatsCommandMoveView,
+    "api/rats/daylight/command/move/",
+    urlpatterns,
+)
+register_action(
+    "rats-daylight-command-battle",
+    RatsCommandBattleView,
+    "api/rats/daylight/command/battle/",
+    urlpatterns,
+)
+register_action(
+    "rats-daylight-command-build",
+    RatsCommandBuildView,
+    "api/rats/daylight/command/build/",
+    urlpatterns,
+)
+register_action(
+    "rats-daylight-advance",
+    RatsDaylightAdvanceView,
+    "api/rats/daylight/advance/",
+    urlpatterns,
+)
+register_action(
+    "rats-daylight-advance-move",
+    RatsAdvanceMoveView,
+    "api/rats/daylight/advance/move/",
+    urlpatterns,
+)
+register_action(
+    "rats-daylight-advance-battle",
+    RatsAdvanceBattleView,
+    "api/rats/daylight/advance/battle/",
+    urlpatterns,
+)
+# Rats evening
+register_action(
+    "rats-evening-incite",
+    RatsEveningInciteView,
+    "api/rats/evening/incite/",
+    urlpatterns,
+)
+register_action(
+    "rats-evening-discard",
+    RatsEveningDiscardView,
+    "api/rats/evening/discard/",
+    urlpatterns,
+)
+# Rats events
+register_action(
+    "rats-hoard-too-full",
+    RatsHoardTooFullView,
+    "api/rats/events/hoard-too-full/",
+    urlpatterns,
+)
+register_action(
+    "rats-bitter-resolve",
+    RatsResolveBitterView,
+    "api/rats/events/bitter-resolve/",
+    urlpatterns,
+)
+register_action(
+    "rats-looting",
+    RatsLootingView,
+    "api/rats/events/looting/",
+    urlpatterns,
+)
+register_action(
+    "rats-jubilant-mob-spread",
+    RatsJubilantMobSpreadView,
+    "api/rats/events/jubilant-mob-spread/",
+    urlpatterns,
+)
+register_action(
+    "rats-lavish",
+    RatsLavishView,
+    "api/rats/events/lavish/",
     urlpatterns,
 )
 

@@ -3,7 +3,7 @@ version: "3.8"
 services:
   web:
     build: .
-    image: mattdf93/rootgame:v1.0.6
+    image: mattdf93/rootgame:v1.0.7
     profiles: ["prod"]
     volumes:
       - ./db.sqlite3:/app/db.sqlite3

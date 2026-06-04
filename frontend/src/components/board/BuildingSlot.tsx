@@ -12,7 +12,8 @@ export type BuildingType =
   | "base"
   | "ruin"
   | "citadels"
-  | "markets";
+  | "markets"
+  | "strongholds";
 
 export type BuildingInfo = {
   buildingType: BuildingType;

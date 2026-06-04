@@ -35,6 +35,7 @@ def next_player_setup(game: Game):
         GameSimpleSetup.GameSetupStatus.WA_SETUP: Faction.WOODLAND_ALLIANCE,
         GameSimpleSetup.GameSetupStatus.CROWS_SETUP: Faction.CROWS,
         GameSimpleSetup.GameSetupStatus.MOLES_SETUP: Faction.MOLES,
+        GameSimpleSetup.GameSetupStatus.RATS_SETUP: Faction.RATS,
     }
 
     # If the step isn't INITIAL_SETUP or COMPLETED, we must verify the faction is present
